@@ -73,6 +73,15 @@ class Store extends ChangeNotifier {
     notifyListeners();
     return g;
   }
+
+  /// Joins [g] at the group price. Returns false if it is full, expired or already joined.
+  bool joinGroup(GroupDeal g) {
+    if (!g.open || g.members.contains(me)) return false;
+    g.members.add(me);
+    _placeOrder(g.product, g.product.groupPrice, g);
+    notifyListeners();
+    return true;
+  }
 }
 
 final store = Store();
