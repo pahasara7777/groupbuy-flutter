@@ -138,6 +138,15 @@ class Store extends ChangeNotifier {
 
   double get cartDiscount => appliedCoupon?.discountFor(cartTotal) ?? 0;
   double get cartPayable => cartTotal - cartDiscount;
+
+  final Set<String> _wishlist = {};
+
+  bool isWished(Product p) => _wishlist.contains(p.id);
+
+  void toggleWish(Product p) {
+    if (!_wishlist.remove(p.id)) _wishlist.add(p.id);
+    notifyListeners();
+  }
 }
 
 final store = Store();
