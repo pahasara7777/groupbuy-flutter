@@ -14,7 +14,9 @@ void main() {
 
   testWidgets('AppButton with no handler is dimmed and does nothing', (tester) async {
     await tester.pumpWidget(host(const AppButton('Disabled', onPressed: null)));
-    final opacity = tester.widget<Opacity>(find.byType(Opacity));
+    final opacity = tester.widget<Opacity>(
+      find.descendant(of: find.byType(AppButton), matching: find.byType(Opacity)),
+    );
     expect(opacity.opacity, 0.4);
   });
 }
