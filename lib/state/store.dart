@@ -39,6 +39,13 @@ class Store extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  /// Cart contents as (product, quantity) pairs, in insertion order.
+  List<({Product product, int qty})> get cartLines =>
+      [for (final e in cart.entries) (product: productById(e.key), qty: e.value)];
+
+  double get cartTotal =>
+      cartLines.fold<double>(0, (sum, l) => sum + l.product.price * l.qty);
 }
 
 final store = Store();
