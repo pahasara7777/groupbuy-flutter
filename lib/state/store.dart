@@ -9,6 +9,8 @@ import '../models/app_notification.dart';
 import '../models/group_deal.dart';
 import '../models/order.dart';
 import '../models/product.dart';
+import '../models/user_profile.dart';
+import '../data/demo_user.dart';
 
 /// Name used for the signed-in shopper inside group member lists.
 const me = 'You';
@@ -192,6 +194,31 @@ class Store extends ChangeNotifier {
   double get totalSaved => orders
       .where((o) => o.group != null && o.status != OrderStatus.refunded)
       .fold<double>(0, (s, o) => s + (o.product.price - o.paid));
+
+  bool signedIn = false;
+  bool onboarded = false;
+  UserProfile? user;
+
+  void finishOnboarding() {
+    onboarded = true;
+    notifyListeners();
+  }
+
+  /// Demo sign-in: accepts any non-empty email and loads the demo profile.
+  // shortcut: no real auth, replace with FirebaseAuth when it is connected.
+  bool signIn(String email) {
+    if (email.trim().isEmpty) return false;
+    user = demoUser;
+    signedIn = true;
+    notifyListeners();
+    return true;
+  }
+
+  void signOut() {
+    user = null;
+    signedIn = false;
+    notifyListeners();
+  }
 }
 
 final store = Store();
