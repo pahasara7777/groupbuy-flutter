@@ -104,13 +104,19 @@ class Store extends ChangeNotifier {
   }
 
   /// Turns every cart line into solo orders and empties the cart.
+  /// A coupon discount is spread across the lines in proportion to their price.
   List<Order> checkout() {
+    final total = cartTotal;
+    final ratio = total == 0 ? 1.0 : cartPayable / total;
     final placed = <Order>[];
     for (final l in cartLines) {
       for (var i = 0; i < l.qty; i++) {
-        placed.add(_placeOrder(l.product, l.product.price, null));
+        placed.add(_placeOrder(l.product, l.product.price * ratio, null));
       }
     }
+    final c = appliedCoupon;
+    if (c != null) _usedCoupons.add(c.code);
+    appliedCoupon = null;
     cart.clear();
     notifyListeners();
     return placed;
