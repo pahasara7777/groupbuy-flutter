@@ -1,4 +1,4 @@
-/// One import for every shared widget.
+// One import for every shared widget.
 export 'app_button.dart';
 export 'app_chip.dart';
 export 'avatar_stack.dart';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../core/format.dart';
-import '../core/navigation.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../models/group_deal.dart';

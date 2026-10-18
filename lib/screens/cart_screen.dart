@@ -43,7 +43,7 @@ class CartScreen extends StatelessWidget {
               for (final Coupon c in options)
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: CircleIconButton(Icons.local_offer_outlined, size: 44, background: AppColors.accentSoft, iconColor: AppColors.accent),
+                  leading: const CircleIconButton(Icons.local_offer_outlined, size: 44, background: AppColors.accentSoft, iconColor: AppColors.accent),
                   title: Text(c.title, style: AppText.bodyStrong),
                   subtitle: Text(CouponsScreen.expiryText(c), style: AppText.caption),
                   trailing: Text(c.badge, style: AppText.h3.copyWith(color: AppColors.accent)),
