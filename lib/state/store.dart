@@ -184,6 +184,14 @@ class Store extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  /// Orders filtered by [status]; null returns everything.
+  List<Order> ordersWhere(OrderStatus? status) =>
+      status == null ? List.of(orders) : orders.where((o) => o.status == status).toList();
+
+  double get totalSaved => orders
+      .where((o) => o.group != null && o.status != OrderStatus.refunded)
+      .fold<double>(0, (s, o) => s + (o.product.price - o.paid));
 }
 
 final store = Store();
