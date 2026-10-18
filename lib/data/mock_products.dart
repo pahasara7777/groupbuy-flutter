@@ -49,4 +49,16 @@ const mockProducts = <Product>[
     rating: 4.5,
     description: 'Compact angled desk clock with a bright always-on display.',
   ),
+  Product(
+    id: 'p5',
+    title: 'Studio Headphones Pro',
+    category: 'Audio',
+    image: 'assets/images/headphones_pro.jpg',
+    price: 129,
+    groupPrice: 89,
+    groupSize: 4,
+    sold: 5600,
+    rating: 4.8,
+    description: 'Over-ear studio headphones with deep bass and 40 hour battery.',
+  ),
 ];
