@@ -82,6 +82,13 @@ class Store extends ChangeNotifier {
     notifyListeners();
     return true;
   }
+
+  /// Buys [p] alone at the regular price.
+  Order buySolo(Product p) {
+    final o = _placeOrder(p, p.price, null);
+    notifyListeners();
+    return o;
+  }
 }
 
 final store = Store();
