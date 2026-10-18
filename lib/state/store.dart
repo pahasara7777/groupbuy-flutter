@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import '../data/mock_coupons.dart';
 import '../data/mock_groups.dart';
+import '../data/mock_notifications.dart';
 import '../data/mock_orders.dart';
 import '../data/mock_products.dart';
 import '../models/coupon.dart';
+import '../models/app_notification.dart';
 import '../models/group_deal.dart';
 import '../models/order.dart';
 import '../models/product.dart';
@@ -19,6 +21,7 @@ class Store extends ChangeNotifier {
   late final List<GroupDeal> groups = seedGroups(products);
   late final List<Order> orders = seedOrders(products);
   final Map<String, int> cart = {}; // product id -> quantity
+  late final List<AppNotification> notifications = seedNotifications();
 
   final List<Coupon> coupons = seedCoupons();
   final Set<String> _usedCoupons = {...usedCouponCodes};
@@ -171,6 +174,15 @@ class Store extends ChangeNotifier {
     if (open.isEmpty) return null;
     open.sort((a, b) => b.progress.compareTo(a.progress));
     return open.first;
+  }
+
+  int get unreadCount => notifications.where((n) => !n.read).length;
+
+  void markAllRead() {
+    for (final n in notifications) {
+      n.read = true;
+    }
+    notifyListeners();
   }
 }
 
