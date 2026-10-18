@@ -89,6 +89,13 @@ class Store extends ChangeNotifier {
     notifyListeners();
     return o;
   }
+
+  /// Demo helper: pretend a friend opened your invite link.
+  void simulateFriendJoin(GroupDeal g) {
+    if (!g.open) return;
+    g.members.add('Friend ${g.members.length}');
+    notifyListeners();
+  }
 }
 
 final store = Store();
