@@ -25,4 +25,16 @@ const mockProducts = <Product>[
     rating: 4.6,
     description: 'Lightweight smart glasses with a heads-up display and dual cameras.',
   ),
+  Product(
+    id: 'p3',
+    title: 'Noir Reserve Decanter',
+    category: 'Decor',
+    image: 'assets/images/decanter.jpg',
+    price: 89,
+    groupPrice: 64,
+    groupSize: 4,
+    sold: 1400,
+    rating: 4.7,
+    description: 'Hand-finished matte decanter with a copper accent line.',
+  ),
 ];
