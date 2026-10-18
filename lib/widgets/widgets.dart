@@ -11,6 +11,7 @@ export 'group_progress_ring.dart';
 export 'info_pill.dart';
 export 'price_tag.dart';
 export 'product_card.dart';
+export 'product_grid.dart';
 export 'product_image.dart';
 export 'product_thumb.dart';
 export 'search_field.dart';
