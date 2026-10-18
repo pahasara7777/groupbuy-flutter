@@ -11,4 +11,8 @@ const categories = <ProductCategory>[
   ProductCategory('Wearables', 'assets/images/smart_glasses.jpg'),
   ProductCategory('Gaming', 'assets/images/controller.jpg'),
   ProductCategory('Decor', 'assets/images/decanter.jpg'),
+  ProductCategory('Fashion', 'assets/images/fashion_maxi.jpg'),
+  ProductCategory('Fragrance', 'assets/images/perfume_rose.jpg'),
+  ProductCategory('Cameras', 'assets/images/gimbal_pocket.jpg'),
+  ProductCategory('Tech', 'assets/images/desk_clock.jpg'),
 ];

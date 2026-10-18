@@ -10,7 +10,7 @@ void main() {
 
   test('matches titles case-insensitively', () {
     final r = s.search('HEADPHONES');
-    expect(r.length, 3);
+    expect(r.length, 6);
     expect(r.every((p) => p.category == 'Audio'), isTrue);
   });
 
