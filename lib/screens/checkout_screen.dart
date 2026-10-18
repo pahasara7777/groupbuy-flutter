@@ -44,7 +44,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   int _method = 0;
   bool _paying = false;
 
-  double get _subtotal => widget.lines.fold(0, (s, l) => s + l.unitPrice * l.qty);
+  double get _subtotal => widget.lines.fold<double>(0, (s, l) => s + l.unitPrice * l.qty);
   double get _total => _subtotal - widget.discount;
 
   void _pay() {
