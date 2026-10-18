@@ -17,5 +17,6 @@ export 'search_field.dart';
 export 'section_header.dart';
 export 'success_badge.dart';
 export 'summary_card.dart';
+export 'timer_pill.dart';
 export 'top_bar.dart';
 export 'white_card.dart';
