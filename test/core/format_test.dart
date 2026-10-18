@@ -18,4 +18,13 @@ void main() {
       expect(formatRemaining(const Duration(seconds: -1)), isNull);
     });
   });
+
+  group('dateRange', () {
+    test('same month shows the day only once', () {
+      expect(dateRange(DateTime(2026, 10, 24), DateTime(2026, 10, 27)), 'Oct 24 – 27');
+    });
+    test('crossing a month names both months', () {
+      expect(dateRange(DateTime(2026, 10, 30), DateTime(2026, 11, 2)), 'Oct 30 – Nov 2');
+    });
+  });
 }
