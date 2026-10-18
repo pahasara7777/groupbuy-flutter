@@ -20,6 +20,25 @@ class Store extends ChangeNotifier {
 
   int _orderSeq = 20480;
   int _groupSeq = 0;
+
+  Product productById(String id) => products.firstWhere((p) => p.id == id);
+
+  int get cartCount => cart.values.fold(0, (a, b) => a + b);
+
+  void addToCart(Product p) {
+    cart[p.id] = (cart[p.id] ?? 0) + 1;
+    notifyListeners();
+  }
+
+  void removeFromCart(Product p) {
+    final n = (cart[p.id] ?? 0) - 1;
+    if (n <= 0) {
+      cart.remove(p.id);
+    } else {
+      cart[p.id] = n;
+    }
+    notifyListeners();
+  }
 }
 
 final store = Store();
