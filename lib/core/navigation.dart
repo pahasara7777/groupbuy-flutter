@@ -18,3 +18,6 @@ void showMessage(BuildContext context, String text) {
     ..hideCurrentSnackBar()
     ..showSnackBar(SnackBar(content: Text(text), behavior: SnackBarBehavior.floating));
 }
+
+/// Lets the store show a SnackBar without a BuildContext (set on MaterialApp in main.dart).
+final messengerKey = GlobalKey<ScaffoldMessengerState>();
