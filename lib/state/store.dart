@@ -219,6 +219,12 @@ class Store extends ChangeNotifier {
     signedIn = false;
     notifyListeners();
   }
+
+  void markRead(AppNotification n) {
+    if (n.read) return;
+    n.read = true;
+    notifyListeners();
+  }
 }
 
 final store = Store();
