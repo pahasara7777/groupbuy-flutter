@@ -11,3 +11,12 @@ String? formatRemaining(Duration d) {
   String two(int n) => n.toString().padLeft(2, '0');
   return '${two(d.inHours)}:${two(d.inMinutes % 60)}:${two(d.inSeconds % 60)}';
 }
+
+const _months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/// "Oct 24 – 27", or "Oct 30 – Nov 2" when the range crosses a month.
+String dateRange(DateTime from, DateTime to) {
+  final a = '${_months[from.month - 1]} ${from.day}';
+  final b = from.month == to.month ? '${to.day}' : '${_months[to.month - 1]} ${to.day}';
+  return '$a – $b';
+}
