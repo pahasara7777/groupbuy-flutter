@@ -161,6 +161,17 @@ class Store extends ChangeNotifier {
   }
 
   List<Product> productsIn(String category) => search('', category: category);
+
+  /// Best sellers first.
+  List<Product> get trending => [...products]..sort((a, b) => b.sold.compareTo(a.sold));
+
+  /// The product whose open group is closest to filling up (for the Deals banner).
+  GroupDeal? get featuredGroup {
+    final open = groups.where((g) => g.open).toList();
+    if (open.isEmpty) return null;
+    open.sort((a, b) => b.progress.compareTo(a.progress));
+    return open.first;
+  }
 }
 
 final store = Store();
