@@ -97,4 +97,16 @@ const mockProducts = <Product>[
     rating: 4.6,
     description: 'Soft cream wireless headphones tuned for all-day comfort.',
   ),
+  Product(
+    id: 'p9',
+    title: 'Pro Game Controller',
+    category: 'Gaming',
+    image: 'assets/images/controller.jpg',
+    price: 79,
+    groupPrice: 54,
+    groupSize: 3,
+    sold: 4300,
+    rating: 4.7,
+    description: 'Translucent wireless controller with precision sticks.',
+  ),
 ];
