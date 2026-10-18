@@ -57,7 +57,7 @@ class FirebaseAuthService implements AuthService {
     if (u == null) return null;
     final email = u.email ?? '';
     final name = (u.displayName?.trim().isNotEmpty ?? false) ? u.displayName! : email.split('@').first;
-    return UserProfile(name: name, email: email, address: 'No delivery address yet');
+    return UserProfile(name: name, email: email, address: 'No delivery address yet', uid: u.uid);
   }
 
   @override
@@ -70,7 +70,7 @@ class FirebaseAuthService implements AuthService {
   Future<UserProfile> register(String name, String email, String password) => _run(() async {
         final c = await _auth.createUserWithEmailAndPassword(email: email.trim(), password: password);
         await c.user?.updateDisplayName(name.trim());
-        return UserProfile(name: name.trim(), email: email.trim(), address: 'No delivery address yet');
+        return UserProfile(name: name.trim(), email: email.trim(), address: 'No delivery address yet', uid: c.user!.uid);
       });
 
   @override

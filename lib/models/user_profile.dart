@@ -1,7 +1,10 @@
 class UserProfile {
-  const UserProfile({required this.name, required this.email, required this.address});
+  const UserProfile({required this.name, required this.email, required this.address, this.uid = ''});
 
   final String name, email, address;
+
+  /// Firebase user id; empty for the demo user.
+  final String uid;
 
   /// "PL" for "Pahasara Lekamge".
   String get initials {
