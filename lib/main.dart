@@ -13,7 +13,10 @@ Future<void> main() async {
   store.onNotice = (m) => messengerKey.currentState
     ?..hideCurrentSnackBar()
     ..showSnackBar(SnackBar(content: Text(m), behavior: SnackBarBehavior.floating));
+  // flutter run --dart-define=DEMO=true skips Firebase and uses the built-in demo data.
+  const demoOnly = bool.fromEnvironment('DEMO');
   try {
+    if (demoOnly) throw StateError('DEMO=true');
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     store.auth = FirebaseAuthService();
     store.backend = FirestoreBackend();
