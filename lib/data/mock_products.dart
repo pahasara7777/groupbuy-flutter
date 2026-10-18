@@ -85,4 +85,16 @@ const mockProducts = <Product>[
     rating: 4.9,
     description: 'Lightweight serum foundation with a natural, silky finish.',
   ),
+  Product(
+    id: 'p8',
+    title: 'Cloud Headphones',
+    category: 'Audio',
+    image: 'assets/images/headphones_cream.jpg',
+    price: 119,
+    groupPrice: 84,
+    groupSize: 4,
+    sold: 1900,
+    rating: 4.6,
+    description: 'Soft cream wireless headphones tuned for all-day comfort.',
+  ),
 ];
