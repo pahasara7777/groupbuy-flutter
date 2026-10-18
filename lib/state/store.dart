@@ -11,6 +11,7 @@ import '../models/order.dart';
 import '../models/product.dart';
 import '../models/user_profile.dart';
 import '../data/demo_user.dart';
+import '../services/auth_service.dart';
 
 /// Name used for the signed-in shopper inside group member lists.
 const me = 'You';
@@ -199,6 +200,37 @@ class Store extends ChangeNotifier {
   bool onboarded = false;
   UserProfile? user;
 
+  /// Swapped for [FirebaseAuthService] in main() once Firebase is configured.
+  AuthService auth = DemoAuthService();
+
+  /// Restores a session that outlived the app (Firebase keeps the user signed in).
+  void restoreSession() {
+    final u = auth.current;
+    if (u == null) return;
+    user = u;
+    signedIn = true;
+    onboarded = true;
+    notifyListeners();
+  }
+
+  /// Returns an error message to show, or null on success.
+  Future<String?> signInWithEmail(String email, String password) =>
+      _authenticate(() => auth.signIn(email, password));
+
+  Future<String?> register(String name, String email, String password) =>
+      _authenticate(() => auth.register(name, email, password));
+
+  Future<String?> _authenticate(Future<UserProfile> Function() attempt) async {
+    try {
+      user = await attempt();
+      signedIn = true;
+      notifyListeners();
+      return null;
+    } on AuthException catch (e) {
+      return e.message;
+    }
+  }
+
   void finishOnboarding() {
     onboarded = true;
     notifyListeners();
@@ -215,6 +247,7 @@ class Store extends ChangeNotifier {
   }
 
   void signOut() {
+    auth.signOut();
     user = null;
     signedIn = false;
     notifyListeners();
