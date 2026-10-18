@@ -46,6 +46,33 @@ class Store extends ChangeNotifier {
 
   double get cartTotal =>
       cartLines.fold<double>(0, (sum, l) => sum + l.product.price * l.qty);
+
+  String _nextOrderId() => '#GB-${++_orderSeq}';
+
+  Order _placeOrder(Product p, double paid, GroupDeal? g) {
+    final o = Order(id: _nextOrderId(), product: p, paid: paid, at: DateTime.now(), group: g);
+    orders.insert(0, o);
+    return o;
+  }
+
+  /// Groups for [p] that [me] can still join.
+  List<GroupDeal> openGroupsFor(Product p) => groups
+      .where((g) => g.product.id == p.id && g.open && !g.members.contains(me))
+      .toList();
+
+  /// Starts a new 24 hour group with [me] as the first member.
+  GroupDeal startGroup(Product p) {
+    final g = GroupDeal(
+      id: 'g${_groupSeq++}',
+      product: p,
+      members: [me],
+      expiresAt: DateTime.now().add(const Duration(hours: 24)),
+    );
+    groups.add(g);
+    _placeOrder(p, p.groupPrice, g);
+    notifyListeners();
+    return g;
+  }
 }
 
 final store = Store();
