@@ -13,9 +13,9 @@ class Product {
     this.description = '',
   });
 
+  /// [image] is the asset path of the product photo.
   final String id, title, category, image, description;
 
-  /// Asset path of the product photo.
   final double price, groupPrice, rating;
   final int groupSize, sold;
 
