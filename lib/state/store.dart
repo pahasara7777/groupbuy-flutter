@@ -96,6 +96,19 @@ class Store extends ChangeNotifier {
     g.members.add('Friend ${g.members.length}');
     notifyListeners();
   }
+
+  /// Turns every cart line into solo orders and empties the cart.
+  List<Order> checkout() {
+    final placed = <Order>[];
+    for (final l in cartLines) {
+      for (var i = 0; i < l.qty; i++) {
+        placed.add(_placeOrder(l.product, l.product.price, null));
+      }
+    }
+    cart.clear();
+    notifyListeners();
+    return placed;
+  }
 }
 
 final store = Store();
