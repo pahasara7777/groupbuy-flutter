@@ -1,6 +1,6 @@
 # GroupBuy
 
-A Pinduoduo-style group-buying shop built with Flutter for global markets. Runs on in-memory mock data; no backend yet.
+A Pinduoduo-style group-buying shop built with Flutter for global markets. Works offline on demo data, and shares groups and orders through Firebase once you sign in.
 
 Design: https://www.figma.com/design/ukgm4jQd0eVF6xvWr56NSg
 
@@ -25,6 +25,10 @@ Each product has a solo price and a lower group price. Join an open group, start
 - `lib/widgets/`, `lib/screens/`: UI
 - `test/`: unit, widget and flow tests
 
+## More
+
+- [Architecture](docs/ARCHITECTURE.md), [Firebase setup](docs/FIREBASE.md), [Design](docs/DESIGN.md)
+
 ## Not built yet
 
-Firebase auth and Firestore, real payments (must be server-side), seller dashboard, translations, push notifications.
+Real payments (must be server-side), refunds for expired groups (Cloud Function), seller dashboard, translations, push notifications.
