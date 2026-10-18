@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../core/format.dart';
 import '../core/navigation.dart';
+import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../models/group_deal.dart';
 import '../state/store.dart';
@@ -51,7 +52,7 @@ class GroupWaitingView extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('${group.members.length} / ${p.groupSize}', style: AppText.priceL.copyWith(color: null)),
+                          Text('${group.members.length} / ${p.groupSize}', style: AppText.priceL.copyWith(color: AppColors.ink)),
                           Text('joined', style: AppText.caption),
                         ],
                       ),
@@ -65,7 +66,7 @@ class GroupWaitingView extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       'Invite friends. If the group is not full when time runs out, you are refunded.',
-                      style: AppText.body.copyWith(color: AppText.caption.color),
+                      style: AppText.body.copyWith(color: AppColors.ink2),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
