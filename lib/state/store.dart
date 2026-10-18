@@ -147,6 +147,20 @@ class Store extends ChangeNotifier {
     if (!_wishlist.remove(p.id)) _wishlist.add(p.id);
     notifyListeners();
   }
+
+  /// Case-insensitive match on title, category and description. Empty query = all.
+  List<Product> search(String query, {String? category}) {
+    final q = query.trim().toLowerCase();
+    return products.where((p) {
+      if (category != null && p.category != category) return false;
+      if (q.isEmpty) return true;
+      return p.title.toLowerCase().contains(q) ||
+          p.category.toLowerCase().contains(q) ||
+          p.description.toLowerCase().contains(q);
+    }).toList();
+  }
+
+  List<Product> productsIn(String category) => search('', category: category);
 }
 
 final store = Store();
