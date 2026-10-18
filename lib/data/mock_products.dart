@@ -37,4 +37,16 @@ const mockProducts = <Product>[
     rating: 4.7,
     description: 'Hand-finished matte decanter with a copper accent line.',
   ),
+  Product(
+    id: 'p4',
+    title: 'Smart Desk Clock',
+    category: 'Tech',
+    image: 'assets/images/desk_clock.jpg',
+    price: 59,
+    groupPrice: 39,
+    groupSize: 3,
+    sold: 3200,
+    rating: 4.5,
+    description: 'Compact angled desk clock with a bright always-on display.',
+  ),
 ];
