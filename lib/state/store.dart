@@ -131,7 +131,8 @@ class Store extends ChangeNotifier {
     _groupSub = _orderSub = null;
     _backend = null;
     _uid = null;
-    _groupRecs = _orderRecs = const [];
+    _groupRecs = const [];
+    _orderRecs = const [];
     groups.clear();
     orders.clear();
   }
