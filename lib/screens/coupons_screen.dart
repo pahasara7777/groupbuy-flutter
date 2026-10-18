@@ -67,6 +67,7 @@ class _CouponTile extends StatelessWidget {
         color: AppColors.surface,
         child: IntrinsicHeight(
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
                 width: 96,
@@ -94,7 +95,8 @@ class _CouponTile extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: GestureDetector(
+                child: Center(
+                  child: GestureDetector(
                   onTap: used ? null : onUse,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
@@ -106,6 +108,7 @@ class _CouponTile extends StatelessWidget {
                       used ? 'Used' : (applied ? 'Applied' : 'Use'),
                       style: AppText.caption.copyWith(color: used ? AppColors.ink2 : Colors.white),
                     ),
+                  ),
                   ),
                 ),
               ),
