@@ -39,21 +39,17 @@ class NotificationsScreen extends StatelessWidget {
               children: [
                 TopBar(
                   'Notifications',
-                  trailing: GestureDetector(
+                  trailing: CircleIconButton(
+                    Icons.done_all,
+                    border: true,
+                    tooltip: 'Mark all as read',
                     onTap: store.markAllRead,
-                    child: SizedBox(
-                      width: 40,
-                      child: Text('Read all', style: AppText.micro.copyWith(color: AppColors.accent)),
-                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 for (final n in store.notifications) ...[
                   WhiteCard(
-                    onTap: () {
-                      n.read = true;
-                      store.notifyListeners();
-                    },
+                    onTap: () => store.markRead(n),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
