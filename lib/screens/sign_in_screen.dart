@@ -14,20 +14,44 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final _name = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
   String? _error;
+  bool _creating = false;
+  bool _busy = false;
 
   @override
   void dispose() {
+    _name.dispose();
     _email.dispose();
     _password.dispose();
     super.dispose();
   }
 
-  void _submit([String? email]) {
-    if (!store.signIn(email ?? _email.text)) {
-      setState(() => _error = 'Enter your email to continue.');
+  /// One-tap demo sign-in, only offered while Firebase is not connected.
+  void _demo() => store.signIn('demo@groupbuy.app');
+
+  Future<void> _submit() async {
+    final email = _email.text.trim();
+    final password = _password.text;
+    if (email.isEmpty || password.isEmpty || (_creating && _name.text.trim().isEmpty)) {
+      setState(() => _error = _creating ? 'Fill in your name, email and password.' : 'Enter your email and password.');
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final error = _creating
+        ? await store.register(_name.text, email, password)
+        : await store.signInWithEmail(email, password);
+    // On success AppRoot swaps this screen out, so only touch state if we are still here.
+    if (mounted) {
+      setState(() {
+        _busy = false;
+        _error = error;
+      });
     }
   }
 
@@ -63,10 +87,17 @@ class _SignInScreenState extends State<SignInScreen> {
             padding: const EdgeInsets.all(20),
             children: [
               const SizedBox(height: 48),
-              Text('Welcome back', style: AppText.h1),
+              Text(_creating ? 'Create account' : 'Welcome back', style: AppText.h1),
               const SizedBox(height: 8),
-              Text('Sign in to join groups and track your orders.', style: AppText.body.copyWith(color: AppColors.ink2)),
+              Text(
+                _creating ? 'Join groups and save on every order.' : 'Sign in to join groups and track your orders.',
+                style: AppText.body.copyWith(color: AppColors.ink2),
+              ),
               const SizedBox(height: 24),
+              if (_creating) ...[
+                _field(_name, 'Full name', Icons.person_outline),
+                const SizedBox(height: 12),
+              ],
               _field(_email, 'Email address', Icons.mail_outline),
               const SizedBox(height: 12),
               _field(_password, 'Password', Icons.lock_outline, secret: true),
@@ -83,27 +114,32 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              AppButton('Sign in', onPressed: _submit),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  const Expanded(child: Divider()),
-                  Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: Text('or', style: AppText.caption)),
-                  const Expanded(child: Divider()),
-                ],
-              ),
-              const SizedBox(height: 16),
-              AppButton('Continue with Google', style: AppButtonStyle.outline, onPressed: () => _submit('demo@groupbuy.app')),
-              const SizedBox(height: 12),
-              AppButton('Continue with Apple', style: AppButtonStyle.dark, onPressed: () => _submit('demo@groupbuy.app')),
+              AppButton(_busy ? 'Please wait…' : (_creating ? 'Create account' : 'Sign in'), onPressed: _busy ? null : _submit),
+              if (store.auth.isDemo) ...[
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    const Expanded(child: Divider()),
+                    Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: Text('or', style: AppText.caption)),
+                    const Expanded(child: Divider()),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                AppButton('Continue with Google', style: AppButtonStyle.outline, onPressed: _demo),
+                const SizedBox(height: 12),
+                AppButton('Continue with Apple', style: AppButtonStyle.dark, onPressed: _demo),
+              ],
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('New here? ', style: AppText.body.copyWith(color: AppColors.ink2)),
+                  Text(_creating ? 'Have an account? ' : 'New here? ', style: AppText.body.copyWith(color: AppColors.ink2)),
                   GestureDetector(
-                    onTap: () => showMessage(context, 'Demo mode: sign in with any email.'),
-                    child: Text('Create account', style: AppText.bodyStrong.copyWith(color: AppColors.accent)),
+                    onTap: () => setState(() {
+                      _creating = !_creating;
+                      _error = null;
+                    }),
+                    child: Text(_creating ? 'Sign in' : 'Create account', style: AppText.bodyStrong.copyWith(color: AppColors.accent)),
                   ),
                 ],
               ),
