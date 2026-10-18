@@ -73,4 +73,16 @@ const mockProducts = <Product>[
     rating: 4.7,
     description: 'Premium over-ear headphones with active noise cancelling.',
   ),
+  Product(
+    id: 'p7',
+    title: 'Silk Serum Foundation',
+    category: 'Beauty',
+    image: 'assets/images/serum.jpg',
+    price: 42,
+    groupPrice: 29,
+    groupSize: 3,
+    sold: 7900,
+    rating: 4.9,
+    description: 'Lightweight serum foundation with a natural, silky finish.',
+  ),
 ];
