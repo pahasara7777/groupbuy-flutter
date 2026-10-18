@@ -16,8 +16,11 @@ Future<T?> pushScreen<T>(BuildContext context, Widget screen) =>
 void showMessage(BuildContext context, String text) {
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text(text), behavior: SnackBarBehavior.floating));
+    ..showSnackBar(SnackBar(content: Text(text), behavior: SnackBarBehavior.floating, margin: snackMargin));
 }
 
 /// Lets the store show a SnackBar without a BuildContext (set on MaterialApp in main.dart).
 final messengerKey = GlobalKey<ScaffoldMessengerState>();
+
+/// Keeps SnackBars above the floating nav bar.
+const snackMargin = EdgeInsets.fromLTRB(16, 0, 16, 110);

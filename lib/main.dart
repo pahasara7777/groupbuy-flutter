@@ -12,7 +12,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   store.onNotice = (m) => messengerKey.currentState
     ?..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text(m), behavior: SnackBarBehavior.floating));
+    ..showSnackBar(SnackBar(content: Text(m), behavior: SnackBarBehavior.floating, margin: snackMargin));
   // flutter run --dart-define=DEMO=true skips Firebase and uses the built-in demo data.
   const demoOnly = bool.fromEnvironment('DEMO');
   try {
