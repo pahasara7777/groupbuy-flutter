@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
-/// Colour tokens from the Figma file ("Colors" variable collection).
+/// Marketplace palette: white surfaces, near-black ink, blue for actions, red only for deals.
 abstract final class AppColors {
-  static const bg = Color(0xFFF7F7F8);
+  static const bg = Color(0xFFF5F5F5);
   static const surface = Colors.white;
-  static const ink = Color(0xFF111113);
-  static const ink2 = Color(0xFF6B6B76);
-  static const line = Color(0xFFECECEF);
-  static const accent = Color(0xFFD92D20);
-  static const accentSoft = Color(0xFFFEF0EE);
-  static const success = Color(0xFF12B76A);
-  static const successSoft = Color(0xFFE7F8F0);
+  static const ink = Color(0xFF191919);
+  static const ink2 = Color(0xFF707070);
+  static const line = Color(0xFFE5E5E5);
+  static const accent = Color(0xFF3665F3);
+  static const accentSoft = Color(0xFFEBF0FE);
+  static const deal = Color(0xFFC7222A);
+  static const success = Color(0xFF0B7A3E);
+  static const successSoft = Color(0xFFE6F4EA);
   static const warn = Color(0xFFF79009);
 }

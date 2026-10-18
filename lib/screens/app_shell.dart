@@ -7,7 +7,7 @@ import 'home_screen.dart';
 import 'orders_screen.dart';
 import 'profile_screen.dart';
 
-/// The four tabs (Home, Cart, Orders, Me) with the floating pill navigation on top.
+/// The four tabs (Home, Cart, Orders, Me) with the bottom navigation bar.
 class AppShell extends StatelessWidget {
   const AppShell({super.key});
 
@@ -15,28 +15,17 @@ class AppShell extends StatelessWidget {
   Widget build(BuildContext context) => ValueListenableBuilder<int>(
         valueListenable: shellTab,
         builder: (context, tab, _) => Scaffold(
-          body: Stack(
-            children: [
-              IndexedStack(
-                index: tab,
-                children: const [HomeScreen(), CartScreen(), OrdersScreen(), ProfileScreen()],
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 24 + MediaQuery.paddingOf(context).bottom,
-                child: Center(
-                  child: ListenableBuilder(
-                    listenable: store,
-                    builder: (context, _) => FloatingNavBar(
-                      index: tab,
-                      cartCount: store.cartCount,
-                      onChanged: (i) => shellTab.value = i,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          body: IndexedStack(
+            index: tab,
+            children: const [HomeScreen(), CartScreen(), OrdersScreen(), ProfileScreen()],
+          ),
+          bottomNavigationBar: ListenableBuilder(
+            listenable: store,
+            builder: (context, _) => FloatingNavBar(
+              index: tab,
+              cartCount: store.cartCount,
+              onChanged: (i) => shellTab.value = i,
+            ),
           ),
         ),
       );

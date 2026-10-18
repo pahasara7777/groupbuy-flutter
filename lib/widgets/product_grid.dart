@@ -25,7 +25,7 @@ class ProductGrid extends StatelessWidget {
                 crossAxisCount: 2,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 16,
-                mainAxisExtent: cardWidth + 112, // photo (square) + title, price and meta rows
+                mainAxisExtent: cardWidth + 132, // photo (square) + title, price and meta rows
               ),
               itemBuilder: (context, i) {
                 final p = products[i];

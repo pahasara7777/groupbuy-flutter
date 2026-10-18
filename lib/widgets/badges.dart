@@ -14,8 +14,8 @@ class DiscountBadge extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: AppColors.accent,
-          borderRadius: BorderRadius.circular(AppRadius.pill),
+          color: AppColors.deal,
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Text('-$percent%', style: AppText.micro.copyWith(color: Colors.white)),
       );

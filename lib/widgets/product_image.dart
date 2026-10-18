@@ -4,7 +4,7 @@ import '../models/product.dart';
 
 /// Rounded product photo. Falls back to a grey block if the asset is missing.
 class ProductImage extends StatelessWidget {
-  const ProductImage(this.product, {super.key, this.radius = 16, this.fit = BoxFit.cover});
+  const ProductImage(this.product, {super.key, this.radius = 8, this.fit = BoxFit.cover});
 
   final Product product;
   final double radius;

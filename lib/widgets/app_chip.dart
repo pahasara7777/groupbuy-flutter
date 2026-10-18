@@ -17,14 +17,14 @@ class AppChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: selected ? AppColors.ink : AppColors.surface,
+            color: selected ? AppColors.accentSoft : AppColors.surface,
             borderRadius: BorderRadius.circular(AppRadius.pill),
-            border: selected ? null : Border.all(color: AppColors.line),
+            border: Border.all(color: selected ? AppColors.accent : AppColors.line),
           ),
           child: Text(
             label,
             style: AppText.caption.copyWith(
-              color: selected ? Colors.white : AppColors.ink,
+              color: selected ? AppColors.accent : AppColors.ink,
               fontWeight: FontWeight.w600,
             ),
           ),

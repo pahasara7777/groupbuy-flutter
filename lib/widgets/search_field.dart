@@ -14,7 +14,7 @@ class SearchField extends StatelessWidget {
     this.readOnly = false,
     this.autofocus = false,
     this.active = false,
-    this.hint = 'Search headphones, serum, gadgets',
+    this.hint = 'Search for anything',
   });
 
   final TextEditingController? controller;
@@ -30,12 +30,12 @@ class SearchField extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
-        height: 52,
+        height: 46,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: active ? AppColors.ink : AppColors.line),
+          borderRadius: BorderRadius.circular(AppRadius.pill),
+          border: Border.all(color: active ? AppColors.accent : AppColors.ink, width: 1.2),
         ),
         child: Row(
           children: [

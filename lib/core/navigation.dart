@@ -23,4 +23,4 @@ void showMessage(BuildContext context, String text) {
 final messengerKey = GlobalKey<ScaffoldMessengerState>();
 
 /// Keeps SnackBars above the floating nav bar.
-const snackMargin = EdgeInsets.fromLTRB(16, 0, 16, 110);
+const snackMargin = EdgeInsets.fromLTRB(16, 0, 16, 16);

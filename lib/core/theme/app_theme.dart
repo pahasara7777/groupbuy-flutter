@@ -9,6 +9,7 @@ abstract final class AppTheme {
         scaffoldBackgroundColor: AppColors.bg,
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.accent,
+          brightness: Brightness.light,
           primary: AppColors.accent,
           surface: AppColors.surface,
         ),

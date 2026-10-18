@@ -29,8 +29,7 @@ class AppButton extends StatelessWidget {
 
   Color get _fg => switch (style) {
         AppButtonStyle.primary || AppButtonStyle.dark => Colors.white,
-        AppButtonStyle.soft => AppColors.accent,
-        AppButtonStyle.outline => AppColors.ink,
+        AppButtonStyle.soft || AppButtonStyle.outline => AppColors.accent,
       };
 
   @override
@@ -38,17 +37,17 @@ class AppButton extends StatelessWidget {
         opacity: onPressed == null ? 0.4 : 1,
         child: Material(
           color: _bg,
-          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderRadius: BorderRadius.circular(AppRadius.pill),
           child: InkWell(
-            borderRadius: BorderRadius.circular(AppRadius.md),
+            borderRadius: BorderRadius.circular(AppRadius.pill),
             onTap: onPressed,
             child: Container(
-              height: 52,
+              height: 48,
               alignment: Alignment.center,
               decoration: style == AppButtonStyle.outline
                   ? BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppRadius.md),
-                      border: Border.all(color: AppColors.line),
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                      border: Border.all(color: AppColors.accent, width: 1.5),
                     )
                   : null,
               child: Row(

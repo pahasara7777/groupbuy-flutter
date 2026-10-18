@@ -3,11 +3,12 @@ import '../core/navigation.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../data/categories.dart';
+import '../core/theme/app_spacing.dart';
 import '../state/store.dart';
 import '../widgets/widgets.dart';
-import 'categories_screen.dart';
 import 'deals_screen.dart';
 import 'notifications_screen.dart';
+import 'product_screen.dart';
 import 'search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,66 +30,143 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        backgroundColor: AppColors.surface,
         body: SafeArea(
           bottom: false,
           child: ListenableBuilder(
             listenable: store,
             builder: (context, _) => ListView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 130),
+              padding: const EdgeInsets.only(bottom: 24),
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(_greeting, style: AppText.caption),
-                        Text('Team up, pay less', style: AppText.h1),
-                      ],
-                    ),
-                    Badge(
-                      label: Text('${store.unreadCount}'),
-                      isLabelVisible: store.unreadCount > 0,
-                      child: CircleIconButton(
-                        Icons.notifications_none,
-                        size: 44,
-                        border: true,
-                        tooltip: 'Notifications',
-                        onTap: () => pushScreen(context, const NotificationsScreen()),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SearchField(readOnly: true, onTap: () => pushScreen(context, const SearchScreen())),
-                const SizedBox(height: 16),
-                _Hero(onStart: () => pushScreen(context, const DealsScreen())),
-                const SizedBox(height: 16),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 8, 0),
                   child: Row(
                     children: [
-                      AppChip('All', selected: _category == null, onTap: () => setState(() => _category = null)),
-                      for (final c in categories.take(5)) ...[
-                        const SizedBox(width: 8),
-                        AppChip(c.name, selected: _category == c.name, onTap: () => setState(() => _category = c.name)),
-                      ],
-                      const SizedBox(width: 8),
-                      AppChip('More', onTap: () => pushScreen(context, const CategoriesScreen())),
+                      Expanded(
+                        child: SearchField(readOnly: true, onTap: () => pushScreen(context, const SearchScreen())),
+                      ),
+                      const SizedBox(width: 4),
+                      Badge(
+                        label: Text('${store.unreadCount}'),
+                        isLabelVisible: store.unreadCount > 0,
+                        child: IconButton(
+                          tooltip: 'Notifications',
+                          icon: const Icon(Icons.notifications_none, color: AppColors.ink),
+                          onPressed: () => pushScreen(context, const NotificationsScreen()),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
-                SectionHeader(
-                  _category == null ? 'Trending groups' : _category!,
-                  action: 'See all',
-                  onAction: () => pushScreen(context, const DealsScreen()),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: Text(_greeting, style: AppText.caption),
+                ),
+                SizedBox(
+                  height: 104,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    children: [
+                      for (final c in categories)
+                        _CategoryTile(
+                          c,
+                          selected: _category == c.name,
+                          onTap: () => setState(() => _category = _category == c.name ? null : c.name),
+                        ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _Hero(onStart: () => pushScreen(context, const DealsScreen())),
+                ),
+                const SizedBox(height: 24),
+                if (_category == null) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SectionHeader('Groups ending soon', action: 'See all', onAction: () => pushScreen(context, const DealsScreen())),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 250,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: 8,
+                      separatorBuilder: (_, __) => const SizedBox(width: 12),
+                      itemBuilder: (context, i) {
+                        final p = store.trending[i + 8];
+                        return SizedBox(
+                          width: 150,
+                          child: ProductCard(
+                            p,
+                            wished: store.isWished(p),
+                            onWish: () => store.toggleWish(p),
+                            onTap: () => ProductScreen.open(context, p),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: SectionHeader(
+                    _category ?? 'Trending now',
+                    action: 'See all',
+                    onAction: () => pushScreen(context, const DealsScreen()),
+                  ),
                 ),
                 const SizedBox(height: 12),
-                ProductGrid(_category == null ? store.trending : store.productsIn(_category!)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ProductGrid(_category == null ? store.trending : store.productsIn(_category!)),
+                ),
               ],
             ),
+          ),
+        ),
+      );
+}
+
+class _CategoryTile extends StatelessWidget {
+  const _CategoryTile(this.category, {required this.selected, required this.onTap});
+
+  final ProductCategory category;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox(
+          width: 72,
+          child: Column(
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: selected ? AppColors.accent : Colors.transparent, width: 2),
+                ),
+                child: ClipOval(child: Image.asset(category.image, fit: BoxFit.cover)),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                category.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.caption.copyWith(
+                  color: AppColors.ink,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -101,9 +179,9 @@ class _Hero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         child: Container(
-          color: AppColors.ink,
+          color: AppColors.accent,
           child: Row(
             children: [
               Expanded(
@@ -112,20 +190,16 @@ class _Hero extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(color: AppColors.accent, borderRadius: BorderRadius.circular(999)),
-                        child: Text('FLASH GROUP DEAL', style: AppText.micro.copyWith(color: Colors.white)),
-                      ),
-                      const SizedBox(height: 8),
-                      Text('Up to 40% off when friends join', style: AppText.h2.copyWith(color: Colors.white)),
-                      const SizedBox(height: 12),
+                      Text('Team up, pay less', style: AppText.h1.copyWith(color: Colors.white)),
+                      const SizedBox(height: 4),
+                      Text('Up to 40% off when friends join', style: AppText.body.copyWith(color: Colors.white)),
+                      const SizedBox(height: 16),
                       GestureDetector(
                         onTap: onStart,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(999)),
-                          child: Text('Start a group', style: AppText.caption.copyWith(color: AppColors.ink)),
+                          child: Text('Shop group deals', style: AppText.caption.copyWith(color: AppColors.accent, fontWeight: FontWeight.w700)),
                         ),
                       ),
                     ],
@@ -133,8 +207,8 @@ class _Hero extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: 140,
-                height: 170,
+                width: 130,
+                height: 160,
                 child: ProductImage(store.productById('p8'), radius: 0),
               ),
             ],
