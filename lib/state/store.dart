@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
+import '../data/mock_coupons.dart';
 import '../data/mock_groups.dart';
 import '../data/mock_orders.dart';
 import '../data/mock_products.dart';
+import '../models/coupon.dart';
 import '../models/group_deal.dart';
 import '../models/order.dart';
 import '../models/product.dart';
@@ -17,6 +19,10 @@ class Store extends ChangeNotifier {
   late final List<GroupDeal> groups = seedGroups(products);
   late final List<Order> orders = seedOrders(products);
   final Map<String, int> cart = {}; // product id -> quantity
+
+  final List<Coupon> coupons = seedCoupons();
+  final Set<String> _usedCoupons = {...usedCouponCodes};
+  Coupon? appliedCoupon;
 
   int _orderSeq = 20480;
   int _groupSeq = 0;
@@ -109,6 +115,23 @@ class Store extends ChangeNotifier {
     notifyListeners();
     return placed;
   }
+
+  bool isCouponUsed(Coupon c) => _usedCoupons.contains(c.code);
+
+  /// Coupons still usable for [subtotal] (unused, not expired, minimum spend met).
+  List<Coupon> usableCoupons(double subtotal) =>
+      coupons.where((c) => !isCouponUsed(c) && c.appliesTo(subtotal)).toList();
+
+  /// Applies [c] to the cart; pass null to remove. Returns false if it cannot be used.
+  bool applyCoupon(Coupon? c) {
+    if (c != null && (isCouponUsed(c) || !c.appliesTo(cartTotal))) return false;
+    appliedCoupon = c;
+    notifyListeners();
+    return true;
+  }
+
+  double get cartDiscount => appliedCoupon?.discountFor(cartTotal) ?? 0;
+  double get cartPayable => cartTotal - cartDiscount;
 }
 
 final store = Store();
