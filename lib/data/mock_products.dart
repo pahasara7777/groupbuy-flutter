@@ -61,4 +61,16 @@ const mockProducts = <Product>[
     rating: 4.8,
     description: 'Over-ear studio headphones with deep bass and 40 hour battery.',
   ),
+  Product(
+    id: 'p6',
+    title: 'Aura Lavender Headphones',
+    category: 'Audio',
+    image: 'assets/images/headphones_lavender.jpg',
+    price: 149,
+    groupPrice: 109,
+    groupSize: 5,
+    sold: 2800,
+    rating: 4.7,
+    description: 'Premium over-ear headphones with active noise cancelling.',
+  ),
 ];
