@@ -93,12 +93,14 @@ class GroupWaitingView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    AppButton(
-                      'Demo: a friend joins',
-                      style: AppButtonStyle.outline,
-                      onPressed: () => store.simulateFriendJoin(group),
-                    ),
+                    if (!store.isLive) ...[
+                      const SizedBox(height: 12),
+                      AppButton(
+                        'Demo: a friend joins',
+                        style: AppButtonStyle.outline,
+                        onPressed: () => store.simulateFriendJoin(group),
+                      ),
+                    ],
                   ],
                 ),
               ),

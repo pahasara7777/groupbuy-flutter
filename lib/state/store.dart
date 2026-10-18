@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../data/mock_coupons.dart';
 import '../data/mock_groups.dart';
@@ -12,6 +13,7 @@ import '../models/product.dart';
 import '../models/user_profile.dart';
 import '../data/demo_user.dart';
 import '../services/auth_service.dart';
+import '../services/shop_backend.dart';
 
 /// Name used for the signed-in shopper inside group member lists.
 const me = 'You';
@@ -59,12 +61,127 @@ class Store extends ChangeNotifier {
   double get cartTotal =>
       cartLines.fold<double>(0, (sum, l) => sum + l.product.price * l.qty);
 
-  String _nextOrderId() => '#GB-${++_orderSeq}';
+  String _nextOrderId() => _backend == null
+      ? '#GB-${++_orderSeq}'
+      : '#GB-${(DateTime.now().millisecondsSinceEpoch % 100000).toString().padLeft(5, '0')}';
 
-  Order _placeOrder(Product p, double paid, GroupDeal? g) {
+  /// Creates the order locally and, when [save] is true and a backend is connected, stores it there.
+  Order _placeOrder(Product p, double paid, GroupDeal? g, {bool save = true}) {
     final o = Order(id: _nextOrderId(), product: p, paid: paid, at: DateTime.now(), group: g);
     orders.insert(0, o);
+    if (save) _saveOrder(o);
     return o;
+  }
+
+  void _saveOrder(Order o) {
+    final b = _backend;
+    if (b == null) return;
+    final rec = OrderRecord(
+      id: '${_uid}_${o.at.microsecondsSinceEpoch}_${_orderSeq++}',
+      ref: o.id,
+      productId: o.product.id,
+      paid: o.paid,
+      at: o.at,
+      groupId: o.group?.id,
+    );
+    b.saveOrder(rec, _uid!).catchError((Object _) => _notice('Could not save your order. Check your connection.'));
+  }
+
+  // ---- Backend (Firestore) -------------------------------------------------
+
+  /// Set in main() once Firebase is configured. While null, everything stays in memory.
+  ShopBackend? backend;
+  ShopBackend? _backend;
+  String? _uid;
+  StreamSubscription<List<GroupRecord>>? _groupSub;
+  StreamSubscription<List<OrderRecord>>? _orderSub;
+  List<GroupRecord> _groupRecs = const [];
+  List<OrderRecord> _orderRecs = const [];
+
+  /// Shows a short message to the shopper (wired to a SnackBar in main()).
+  void Function(String message)? onNotice;
+
+  void _notice(String m) => onNotice?.call(m);
+
+  /// True when groups and orders are shared through the backend instead of demo data.
+  bool get isLive => _backend != null;
+
+  /// Switches from demo data to the shared backend for the signed-in user.
+  void _connect() {
+    final b = backend, u = user;
+    if (b == null || u == null || u.uid.isEmpty) return;
+    _disconnect();
+    _backend = b;
+    _uid = u.uid;
+    groups.clear();
+    orders.clear();
+    _groupSub = b.watchGroups().listen((r) {
+      _groupRecs = r;
+      _rebuild();
+    });
+    _orderSub = b.watchOrders(u.uid).listen((r) {
+      _orderRecs = r;
+      _rebuild();
+    });
+  }
+
+  void _disconnect() {
+    _groupSub?.cancel();
+    _orderSub?.cancel();
+    _groupSub = _orderSub = null;
+    _backend = null;
+    _uid = null;
+    _groupRecs = _orderRecs = const [];
+    groups.clear();
+    orders.clear();
+  }
+
+  Product? _productOrNull(String id) {
+    for (final p in products) {
+      if (p.id == id) return p;
+    }
+    return null;
+  }
+
+  /// Rebuilds [groups] and [orders] from the latest backend snapshots.
+  /// Existing [GroupDeal] objects are updated in place so open screens keep working.
+  void _rebuild() {
+    final existing = {for (final g in groups) g.id: g};
+    final next = <GroupDeal>[];
+    for (final r in _groupRecs) {
+      final p = _productOrNull(r.productId);
+      if (p == null) continue;
+      final members = [
+        for (var i = 0; i < r.memberUids.length; i++) r.memberUids[i] == _uid ? me : r.memberNames[i],
+      ];
+      final g = existing[r.id];
+      if (g == null) {
+        next.add(GroupDeal(id: r.id, product: p, members: members, expiresAt: r.expiresAt));
+      } else {
+        g.members
+          ..clear()
+          ..addAll(members);
+        next.add(g);
+      }
+    }
+    groups
+      ..clear()
+      ..addAll(next);
+
+    final byId = {for (final g in groups) g.id: g};
+    final recs = [..._orderRecs]..sort((a, b) => b.at.compareTo(a.at));
+    orders.clear();
+    for (final r in recs) {
+      final p = _productOrNull(r.productId);
+      if (p == null) continue;
+      var g = r.groupId == null ? null : byId[r.groupId];
+      // Group too old to be listed any more: it has certainly expired.
+      if (r.groupId != null && g == null) {
+        g = GroupDeal(id: r.groupId!, product: p, members: [me], expiresAt: r.at);
+      }
+      orders.add(Order(id: r.ref, product: p, paid: r.paid, at: r.at, group: g));
+    }
+    notifyListeners();
   }
 
   /// Groups for [p] that [me] can still join.
@@ -75,13 +192,32 @@ class Store extends ChangeNotifier {
   /// Starts a new 24 hour group with [me] as the first member.
   GroupDeal startGroup(Product p) {
     final g = GroupDeal(
-      id: 'g${_groupSeq++}',
+      id: _backend == null ? 'g${_groupSeq++}' : '${_uid}_${DateTime.now().microsecondsSinceEpoch}',
       product: p,
       members: [me],
       expiresAt: DateTime.now().add(const Duration(hours: 24)),
     );
     groups.add(g);
-    _placeOrder(p, p.groupPrice, g);
+    final o = _placeOrder(p, p.groupPrice, g, save: false);
+    final b = _backend;
+    if (b != null) {
+      b
+          .createGroup(GroupRecord(
+            id: g.id,
+            productId: p.id,
+            groupSize: p.groupSize,
+            memberUids: [_uid!],
+            memberNames: [user!.name],
+            expiresAt: g.expiresAt,
+          ))
+          .then((_) => _saveOrder(o))
+          .catchError((Object _) {
+        groups.remove(g);
+        orders.remove(o);
+        _notice('Could not start the group. Check your connection and try again.');
+        notifyListeners();
+      });
+    }
     notifyListeners();
     return g;
   }
@@ -90,7 +226,24 @@ class Store extends ChangeNotifier {
   bool joinGroup(GroupDeal g) {
     if (!g.open || g.members.contains(me)) return false;
     g.members.add(me);
-    _placeOrder(g.product, g.product.groupPrice, g);
+    final o = _placeOrder(g.product, g.product.groupPrice, g, save: false);
+    final b = _backend;
+    if (b != null) {
+      void undo(String why) {
+        g.members.remove(me);
+        orders.remove(o);
+        _notice(why);
+        notifyListeners();
+      }
+
+      b.joinGroup(g.id, _uid!, user!.name).then((ok) {
+        if (ok) {
+          _saveOrder(o);
+        } else {
+          undo('Sorry, that group just filled up or ended.');
+        }
+      }).catchError((Object _) => undo('Could not join the group. Check your connection and try again.'));
+    }
     notifyListeners();
     return true;
   }
@@ -104,7 +257,7 @@ class Store extends ChangeNotifier {
 
   /// Demo helper: pretend a friend opened your invite link.
   void simulateFriendJoin(GroupDeal g) {
-    if (!g.open) return;
+    if (_backend != null || !g.open) return;
     g.members.add('Friend ${g.members.length}');
     notifyListeners();
   }
@@ -210,6 +363,7 @@ class Store extends ChangeNotifier {
     user = u;
     signedIn = true;
     onboarded = true;
+    _connect();
     notifyListeners();
   }
 
@@ -224,6 +378,7 @@ class Store extends ChangeNotifier {
     try {
       user = await attempt();
       signedIn = true;
+      _connect();
       notifyListeners();
       return null;
     } on AuthException catch (e) {
@@ -248,6 +403,7 @@ class Store extends ChangeNotifier {
 
   void signOut() {
     auth.signOut();
+    _disconnect();
     user = null;
     signedIn = false;
     notifyListeners();
