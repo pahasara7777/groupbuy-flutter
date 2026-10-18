@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "971185480686",
+    "firebase_url": "https://groupbuy-5b6cb-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "groupbuy-5b6cb",
+    "storage_bucket": "groupbuy-5b6cb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971185480686:android:e7487775f3f1019bd424ff",
+        "android_client_info": {
+          "package_name": "com.example.groupbuy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "971185480686-75i8a8bn5avcap0okgv14k0b0jbu2aat.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs3AV0xogKnkV83Slh10yOENPaae48o2Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "971185480686-75i8a8bn5avcap0okgv14k0b0jbu2aat.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
