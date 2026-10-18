@@ -23,7 +23,10 @@ class ProductCard extends StatelessWidget {
   final VoidCallback? onWish;
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        label: product.title,
+        child: GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
         child: Column(
@@ -69,6 +72,7 @@ class ProductCard extends StatelessWidget {
               ],
             ),
           ],
+        ),
         ),
       );
 }
