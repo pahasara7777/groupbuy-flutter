@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import '../core/identity.dart';
 import '../data/mock_coupons.dart';
 import '../data/mock_groups.dart';
 import '../data/mock_notifications.dart';
@@ -15,11 +16,10 @@ import '../data/demo_user.dart';
 import '../services/auth_service.dart';
 import '../services/shop_backend.dart';
 
-/// Name used for the signed-in shopper inside group member lists.
-const me = 'You';
+export '../core/identity.dart' show me;
 
-/// Single source of truth for app state. Everything is in memory for now.
-/// When Firebase is added, replace the bodies of these methods and keep the UI.
+/// Single source of truth for app state. Demo data lives in memory; once a [ShopBackend]
+/// is connected and the shopper signs in, groups and orders are shared through it.
 // shortcut: global singleton instead of Provider/Riverpod, upgrade when more stores appear.
 class Store extends ChangeNotifier {
   final List<Product> products = mockProducts;

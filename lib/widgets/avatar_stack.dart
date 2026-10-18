@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
-import '../state/store.dart';
+import '../core/identity.dart';
 
 const _palette = [Color(0xFFF4A261), Color(0xFF7C9CF5), Color(0xFF5DBB9A), Color(0xFFC084FC)];
 
